@@ -1,0 +1,16 @@
+<span bind="number" class="item-list-row__number"></span>
+
+<div class="item-list-row__content">
+    <div>
+        <hn-link bind="title" class="item-list-row__title"></hn-link>
+        <hn-link bind="website" class="item-list-row__domain"></hn-link>
+    </div>
+    <div class="item-list-row__details">
+        <span bind="score"></span>
+        <span>points by</span>
+        <hn-link bind="by" class="item-list-row__by"></hn-link>
+        <span bind="time"></span>
+        <span> | </span>
+        <hn-link bind="comment-count" class="item-list-row__comment-count"></hn-link>
+    </div>
+</div>

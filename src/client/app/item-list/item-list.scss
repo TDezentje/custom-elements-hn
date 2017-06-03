@@ -1,0 +1,25 @@
+@import "~styles/layout";
+@import "~styles/color";
+
+hn-item-list {
+    @include layout-column-grid();
+    @include layout-padding();
+    
+    .item-list__container {
+        width: 100%;
+    }
+
+    .item-list__navigation {
+        width: 100%;
+        background-color: white;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .item-list__navigation-button {
+        padding: 10px;
+        color: $primary-500;
+    }
+}

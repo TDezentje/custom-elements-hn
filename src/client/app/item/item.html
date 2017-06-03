@@ -1,0 +1,21 @@
+<div class="item__content">
+    <hn-progress-indicator bind="progress-indicator"></hn-progress-indicator>
+
+    <div bind="content">
+        <hn-link bind="title" class="item__title" external></hn-link>
+        <hn-link bind="website" class="item__domain" external></hn-link>
+
+        <div class="item__details">
+            <span bind="score"></span>
+            <span>points by</span>
+            <hn-link bind="by" class="item__by"></hn-link>
+            <hn-link bind="time" class="item__time"></hn-link>
+        </div>
+
+        <p bind="text" class="item__text"></p>
+    </div>
+</div>
+
+<div class="item__comments" bind="commentsList">
+    <span bind="comment-count" class="item_comment-count"></span>
+</div>

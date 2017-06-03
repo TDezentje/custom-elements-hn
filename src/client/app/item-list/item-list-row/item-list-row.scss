@@ -1,0 +1,32 @@
+@import "~styles/layout";
+@import "~styles/font";
+hn-item-list-row {
+    @include layout-row();
+    padding: 16px 16px;
+    background-color: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    .item-list-row__content {
+        @include layout-column();
+    }
+    .item-list-row__number {
+        @include font-headline();
+        margin-right: 16px;
+        width: 45px;
+        min-width: 45px;
+        text-align: right;
+        display: block;
+    }
+    .item-list-row__title {
+        @include font-subheading();
+    }
+    .item-list-row__domain {
+        color: rgba(0, 0, 0, 0.6);
+    }
+    .item-list-row__details {
+        @include font-caption();
+    }
+    .item-list-row__by,
+    .item-list-row__comment-count {
+        @include font-link();
+    }
+}
