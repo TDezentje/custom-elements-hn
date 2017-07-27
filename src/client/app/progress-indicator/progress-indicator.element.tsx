@@ -1,8 +1,12 @@
-import { CustomElement } from 'decorators/custom-element.decorator';
+import { CustomElement, render } from 'decorators/custom-element.decorator';
 
 @CustomElement({
     selector: 'hn-progress-indicator',
-    template: require('./progress-indicator.html'),
+    template: () => <template>
+        <div></div>
+        <div></div>
+        <div></div>
+    </template>,
     css: require('./progress-indicator.scss')
 })
 export class ProgressIndicatorElement extends HTMLElement {

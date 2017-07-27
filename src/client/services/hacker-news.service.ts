@@ -1,7 +1,7 @@
 const cache = {};
 
 export class HackerNewsService {
-    static async getStories(type: string, page:number): Promise<number[]> {
+    static async getStories(type: string, page:number): Promise<any> {
         let key = `https://node-hnapi.herokuapp.com/${type}?page=${page}`;
         if (!(key in cache)) {
             const response = await fetch(key);

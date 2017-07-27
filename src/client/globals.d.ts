@@ -1,3 +1,3 @@
-declare class NodeRequire {
-    ensure (paths: string[], callback: (require: <T>(path: string) => T) => void) : void;
+declare class System {
+    static import (request: string): Promise<any>
 }

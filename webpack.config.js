@@ -4,6 +4,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const deepMerge = require('deepmerge');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const WebpackCleanupPlugin = require('webpack-cleanup-plugin');
+const ClosureCompiler = require('google-closure-compiler-js').webpack;
 
 function concatMerge(destinationArray, sourceArray) {
     return destinationArray.concat(sourceArray)
@@ -33,14 +34,15 @@ const common = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': '"production"'
-        })
+        }),
+        new webpack.optimize.ModuleConcatenationPlugin()
     ]
 };
 
 
 const clientCommon = deepMerge(common, {
     entry: {
-        client: './src/client/app/app.element.ts'
+        client: './src/client/app/app.element.tsx'
     },
     output: {
         path: path.resolve(__dirname, 'dist/client')
@@ -73,7 +75,7 @@ const client = deepMerge(clientCommon, {
     },
     module: {
         rules: [{
-            test: /\.ts?$/,
+            test: /\.(ts|tsx)?$/,
             use: 'ts-loader'
         }]
     },
@@ -81,7 +83,7 @@ const client = deepMerge(clientCommon, {
         new WebpackCleanupPlugin({
             exclude: ["sw.js", "assets/fetch.js", "assets/webcomponents-platform.js", "assets/custom-elements.js", "assets/icons/**/*", "assets/client-polyfilled.*"]
         }),
-        new UglifyJSPlugin({
+        /*new UglifyJSPlugin({
             beautify: false,
             mangle: {
                 screw_ie8: true,
@@ -91,7 +93,15 @@ const client = deepMerge(clientCommon, {
                 screw_ie8: true
             },
             comments: false
-        }),
+        }),*/
+        // new ClosureCompiler({
+        //     options: {
+        //         languageIn: 'ECMASCRIPT6',
+        //         languageOut: 'ECMASCRIPT6',
+        //         compilationLevel: 'ADVANCED',
+        //         warningLevel: 'VERBOSE',
+        //     }
+        // }),
         new SWPrecacheWebpackPlugin({
             cacheId: 'hacker-news',
             filename: 'sw.js',

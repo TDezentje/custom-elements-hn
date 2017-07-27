@@ -9,6 +9,8 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "target": "ES2015",
+        "jsx": "react",
+        "jsxFactory": "render",
         "noImplicitAny": false,
         "types": [
             "node"
