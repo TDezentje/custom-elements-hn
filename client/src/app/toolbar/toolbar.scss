@@ -1,0 +1,41 @@
+@import "~styles/color";
+@import "~styles/font";
+@import "~styles/layout";
+
+
+hn-toolbar {
+    display: block;
+    height: 55px;
+    width: 100%;
+    position: relative;
+}
+
+.floating  {
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    height: 55px;
+    background-color: $primary-500;
+    color: white;
+    will-change: transform;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.content {
+    width: 100%;
+    @include layout-column-grid();
+    @include layout-padding(false);
+    align-items: center;
+    height: 100%;
+}
+
+.link {
+    @include font-subheading();
+    margin-left: 20px;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}

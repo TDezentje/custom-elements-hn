@@ -1,0 +1,24 @@
+@import "~styles/layout";
+@import "~styles/color";
+hn-item-list {
+    @include layout-column-grid();
+    @include layout-padding();
+}
+
+.container {
+    width: 100%;
+}
+
+.navigation {
+    width: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.navigation-button {
+    padding: 10px;
+    color: $primary-500;
+}

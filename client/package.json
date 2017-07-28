@@ -1,0 +1,42 @@
+{
+    "name": "custom-elements-hn",
+    "version": "1.0.0",
+    "description": "Hacker News build with Typescript on top of custom elements",
+    "license": "MIT",
+    "author": "Tom Dezentje",
+    "scripts": {
+        "rimraf": "rimraf",
+        "clean:dist": "npm run rimraf -- dist",
+        "build": "npm run clean:dist && webpack --config webpack.config.js",
+        "watch": "webpack --config webpack.config.js --progress --watch",
+        "start": "npm run webpack-dev-server -- --config webpack.config.js --open --progress --profile --watch --content-base src/",
+        "webpack-dev-server": "node --max_old_space_size=4096 node_modules/webpack-dev-server/bin/webpack-dev-server.js"
+    },
+    "dependencies": {
+        "whatwg-fetch": "2.0.3",
+        "promise-polyfill": "6.0.2",
+        "@webcomponents/custom-elements": "1.0.0",
+        "@webcomponents/webcomponentsjs": "1.0.3"
+    },
+    "devDependencies": {
+        "typescript": "2.3.4",
+        "ts-loader": "2.2.0",
+        "webpack": "3.4.1",
+        "style-loader": "0.18.2",
+        "cssnano": "3.10.0",
+        "sass-loader": "6.0.6",
+        "node-sass": "4.5.3",
+        "css-loader": "0.28.4",
+        "postcss-loader": "2.0.6",
+        "sugarss": "1.0.0",
+        "autoprefixer": "7.1.1",
+        "html-loader": "0.4.5",
+        "@types/node": "7.0.14",
+        "sw-precache-webpack-plugin": "^0.11.3",
+        "rimraf": "2.6.1",
+        "html-webpack-plugin": "2.29.0",
+        "script-ext-html-webpack-plugin": "1.8.5",
+        "copy-webpack-plugin": "4.0.1",
+        "webpack-dev-server": "2.6.1"
+    }
+}

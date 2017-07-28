@@ -1,10 +1,8 @@
 const webpack = require('webpack');
 const path = require('path');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const deepMerge = require('deepmerge');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const WebpackCleanupPlugin = require('webpack-cleanup-plugin');
-const ClosureCompiler = require('google-closure-compiler-js').webpack;
 
 function concatMerge(destinationArray, sourceArray) {
     return destinationArray.concat(sourceArray)
@@ -42,7 +40,7 @@ const common = {
 
 const clientCommon = deepMerge(common, {
     entry: {
-        client: './src/client/app/app.element.tsx'
+        client: './src/client/bootstrap.ts'
     },
     output: {
         path: path.resolve(__dirname, 'dist/client')
@@ -83,25 +81,14 @@ const client = deepMerge(clientCommon, {
         new WebpackCleanupPlugin({
             exclude: ["sw.js", "assets/fetch.js", "assets/webcomponents-platform.js", "assets/custom-elements.js", "assets/icons/**/*", "assets/client-polyfilled.*"]
         }),
-        /*new UglifyJSPlugin({
-            beautify: false,
-            mangle: {
-                screw_ie8: true,
-                keep_fnames: true
-            },
+        new webpack.optimize.UglifyJsPlugin({
             compress: {
                 screw_ie8: true
             },
-            comments: false
-        }),*/
-        // new ClosureCompiler({
-        //     options: {
-        //         languageIn: 'ECMASCRIPT6',
-        //         languageOut: 'ECMASCRIPT6',
-        //         compilationLevel: 'ADVANCED',
-        //         warningLevel: 'VERBOSE',
-        //     }
-        // }),
+            mangle: {
+                screw_ie8: true
+            }
+        }),
         new SWPrecacheWebpackPlugin({
             cacheId: 'hacker-news',
             filename: 'sw.js',
@@ -125,47 +112,6 @@ const client = deepMerge(clientCommon, {
             this.plugin("done", function (stats) {
                 const keys = Object.keys(stats.compilation.assets);
                 assets['client.js'] = '/' + keys[keys.length - 1];
-
-                require("fs").writeFileSync(
-                    path.join(__dirname, "dist", "assets.json"),
-                    JSON.stringify(assets));
-            });
-        }
-    ]
-}, {
-    arrayMerge: concatMerge
-});
-
-const polyfilledClient = deepMerge(clientCommon, {
-    output: {
-        filename: 'assets/client-polyfilled.[id].[chunkhash].js',
-        chunkFilename: 'assets/client-polyfilled.[id].[chunkhash].js',
-    },
-    module: {
-        rules: [{
-            test: /\.ts?$/,
-            loader: 'ts-loader',
-            options: {
-                configFileName: 'tsconfig.polyfill.json'
-            }
-        }]
-    },
-    plugins: [
-        new WebpackCleanupPlugin({
-            exclude: ["sw.js", "assets/fetch.js", "assets/webcomponents-platform.js", "assets/custom-elements.js", "assets/icons/**/*", "assets/client.*"]
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                screw_ie8: true
-            },
-            mangle: {
-                screw_ie8: true
-            }
-        }),
-        function () {
-            this.plugin("done", function (stats) {
-                const keys = Object.keys(stats.compilation.assets);
-                assets['client-polyfilled.js'] = '/' + keys[keys.length - 1];
 
                 require("fs").writeFileSync(
                     path.join(__dirname, "dist", "assets.json"),
@@ -207,6 +153,5 @@ const server = deepMerge(common, {
 
 module.exports = [
     client,
-    polyfilledClient,
     server
 ]
