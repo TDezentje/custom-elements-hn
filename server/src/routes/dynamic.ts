@@ -14,7 +14,6 @@ import { StyleRegistry } from 'decorators/custom-element.decorator';
 
 const indexHtml = path.resolve(path.join('dist', 'index.html'));
 const htmlFile = fs.readFileSync(path.resolve(path.join('dist', 'index.html')), 'utf8');
-
 const styleRegex = /<(hn-[^> ]+)/g;
 
 const swPath = path.resolve(path.join('dist', 'sw.js'));

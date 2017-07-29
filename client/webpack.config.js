@@ -55,15 +55,15 @@ module.exports = {
             name: "client",
             children: true,
         }),
-        // new webpack.optimize.UglifyJsPlugin({
-        //      exclude: [/client.4/i]
-        // }),
+        new webpack.optimize.UglifyJsPlugin({
+              exclude: [/client.4/i]
+        }),
         new SWPrecacheWebpackPlugin({
             cacheId: 'hacker-news',
             filename: 'sw.js',
             maximumFileSizeToCacheInBytes: 4194304,
             minify: true,
-            navigateFallback: 'assets/index.html',
+            navigateFallback: '/index.html',
             runtimeCaching: [{
                 urlPattern: /^https:\/\/node-hnapi.herokuapp.com/,
                 handler: 'networkFirst'
