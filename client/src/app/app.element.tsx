@@ -17,6 +17,8 @@ export class App extends HTMLElement {
         super();
     }
 
+    connectedCallback() {}
+
     afterConnectedCallback() {
         document.body.classList.remove('loading');
     }

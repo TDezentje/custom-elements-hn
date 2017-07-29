@@ -2,7 +2,6 @@ import * as express from 'express';
 import dynamic from './routes/dynamic';
 import staticFiles from './routes/static-files';
 import manifest from './routes/manifest';
-import sw from './routes/sw';
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -13,7 +12,6 @@ const app = express();
 
 app.use(compression());
 
-app.use('/sw.js', sw);
 app.use('/manifest.json', manifest);
 app.use('/assets', staticFiles);
 app.use('/', dynamic);

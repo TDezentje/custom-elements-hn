@@ -12,6 +12,13 @@ function convertToHTML(string) {
     return div.children;
 }
 
+export function raw(content: string) {
+    return {
+        isRaw: true,
+        content: content
+    };
+}
+
 export function render(element: any, attributes: any, ...children: any[]) {
     if (element === 'template') {
         return children;
@@ -22,13 +29,11 @@ export function render(element: any, attributes: any, ...children: any[]) {
     const addChildrenToChildElements = (children) => {
         for (let child of children) {
             if (typeof (child) === 'string' || typeof (child) === 'number') {
-                if (attributes && attributes.raw) {
-                    addChildrenToChildElements(convertToHTML(child));
-                } else {
-                    childElements.push(document.createTextNode(<string>child));
-                }
+                childElements.push(document.createTextNode(<string>child));
             } else if (Array.isArray(child)) {
                 addChildrenToChildElements(child);
+            } else if(child && child.isRaw) {
+                addChildrenToChildElements(convertToHTML(child.content));
             } else if (child) {
                 childElements.push(child);
             }
@@ -68,7 +73,7 @@ export function CustomElement(props: ICustomElementOptions) {
         target.selector = props.selector;
         let func = target.prototype.connectedCallback;
 
-        if (props.css) {
+        if (props.css && !document.querySelector(`style#${props.selector}`)) {
             document.head.innerHTML += `<style id="${props.selector}">${props.css.toString()}</style>`;
         }
 
@@ -125,28 +130,31 @@ export function CustomElement(props: ICustomElementOptions) {
                 }
             }
 
-            if (props.template) {
-                processChildren();
-            }
-
             let connectedCallbackPromise = Promise.resolve();
-            let shouldRefresh = false;
 
-            if (func) {
-                shouldRefresh = true;
+            if(!this.hasAttribute('ssr')) {
+                if (props.template) {
+                    processChildren();
+                }
 
-                let result = func.call(this, arguments);
-                if (result && result.then) {
-                    connectedCallbackPromise = result;
+                let shouldRefresh = false;
+
+                if (func) {
+                    shouldRefresh = true;
+
+                    let result = func.call(this, arguments);
+                    if (result && result.then) {
+                        connectedCallbackPromise = result;
+                    }
+                }
+
+                if (props.template && shouldRefresh) {
+                    connectedCallbackPromise = connectedCallbackPromise.then(() => {
+                        processChildren();
+                    });
                 }
             }
-
-            if (props.template && shouldRefresh) {
-                connectedCallbackPromise = connectedCallbackPromise.then(() => {
-                    processChildren();
-                });
-            }
-
+            
             connectedCallbackPromise.then(() => {
                 if (this.childSelectors) {
                     for (let selector of this.childSelectors) {

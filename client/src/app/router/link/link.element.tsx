@@ -52,6 +52,6 @@ export class LinkElement extends HTMLElement {
     @Bind
     private _onClick(event) {
         event.preventDefault();
-        (document.querySelector('hn-router') as RouterElement).navigate(this.path);
+        (document.querySelector('hn-router') as RouterElement).navigate(this.aElement.getAttribute('href'));
     }
 }

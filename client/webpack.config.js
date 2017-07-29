@@ -7,17 +7,17 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: {
-        client: './src/bootstrap.ts'
+        client: path.resolve(__dirname, './src/bootstrap.ts')
     },
     resolve: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        modules: ['node_modules', './src']
+        modules: ['node_modules', path.resolve(__dirname, './src')]
     },
     node: {
         Buffer: false
     },
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, '../dist'),
         filename: 'assets/main.client.[id].[chunkhash].js',
         chunkFilename: 'assets/chunk.client.[id].[chunkhash].js',
     },
@@ -56,14 +56,14 @@ module.exports = {
             children: true,
         }),
         // new webpack.optimize.UglifyJsPlugin({
-        //     exclude: [/client.4/i]
+        //      exclude: [/client.4/i]
         // }),
         new SWPrecacheWebpackPlugin({
             cacheId: 'hacker-news',
             filename: 'sw.js',
             maximumFileSizeToCacheInBytes: 4194304,
             minify: true,
-            navigateFallback: '/index.html',
+            navigateFallback: 'assets/index.html',
             runtimeCaching: [{
                 urlPattern: /^https:\/\/node-hnapi.herokuapp.com/,
                 handler: 'networkFirst'
@@ -76,7 +76,7 @@ module.exports = {
             }]
         }),
         new HtmlWebpackPlugin({
-            template: 'src/index.ejs',
+            template: path.resolve(__dirname, './src/index.ejs'),
             chunksSortMode: 'dependency',
             inject: 'body'
         }),
@@ -86,7 +86,7 @@ module.exports = {
             inline: [/main/]
         }),
         new CopyWebpackPlugin([{
-            from: 'src/assets',
+            from: path.resolve(__dirname, './src/assets'),
             to: 'assets'
         }, ]),
         new webpack.optimize.ModuleConcatenationPlugin()

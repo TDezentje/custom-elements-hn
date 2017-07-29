@@ -1,4 +1,4 @@
-import { CustomElement, render } from 'decorators/custom-element.decorator';
+import { CustomElement, render, raw } from 'decorators/custom-element.decorator';
 import { Child } from 'decorators/child.decorator';
 import { Input } from 'decorators/input.decorator';
 
@@ -12,7 +12,7 @@ import { LinkElement } from 'app/router/link/link.element';
         <LinkElement class="by" path={`/user/${el.comment.user}`}>{el.comment.user}</LinkElement>
         <LinkElement class="time" path={`/item/${el.comment.id}`}>{el.comment.time_ago}</LinkElement>
 
-        <p ref="text" class="text" raw>{el.comment.content}</p>
+        <p ref="text" class="text">{ raw(el.comment.content) }</p>
         <div class="comments" ref="commentsList">
             {
                 el.comment.comments.map(comment => <CommentElement comment={comment}/>)

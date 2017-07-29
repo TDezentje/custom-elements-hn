@@ -1,4 +1,4 @@
-import { CustomElement, render } from 'decorators/custom-element.decorator';
+import { CustomElement, render, raw } from 'decorators/custom-element.decorator';
 
 import { LinkElement } from 'app/router/link/link.element';
 import { CommentElement } from './comment/comment.element';
@@ -30,7 +30,7 @@ import { HackerNewsService } from 'services/hacker-news.service';
                         </div>
 
                         {
-                            el.item.content ? <p text class="text" raw>{el.item.content}</p> : null
+                            el.item.content ? <p text class="text">{ raw(el.item.content)}</p> : null
                         }
 
                     </div>

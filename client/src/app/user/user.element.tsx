@@ -1,4 +1,4 @@
-import { CustomElement, render } from 'decorators/custom-element.decorator';
+import { CustomElement, render, raw } from 'decorators/custom-element.decorator';
 import { Bind } from 'decorators/bind.decorator';
 import { ProgressIndicatorElement } from 'app/progress-indicator/progress-indicator.element';
 
@@ -21,7 +21,7 @@ import { HackerNewsService } from 'services/hacker-news.service';
                                 <span>{el.user.karma} Karma</span>
                             </div>
 
-                            <p class="text" raw>{el.user.about}</p>
+                            <p class="text">{ raw(el.user.about)}</p>
                         </div>
                 }
             </div>

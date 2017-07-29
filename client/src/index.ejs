@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
@@ -20,38 +21,20 @@
 
         if (!('Promise' in window)) {
             loadScript('/assets/promise.min.js');
-        }        
+        }
+
+        var loadScript = function (e) {
+            var s = document.createElement("script");
+            s.src = e, s.async = !1, document.head.appendChild(s)
+        };
+
+        if('serviceWorker' in navigator) {
+            navigator.serviceWorker.register("/sw.js");
+        }
     </script>
-    <style>
-
-        body.loading {
-            background-image: url();
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-color: rgb(239, 239, 239);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            width: 100vw;
-            margin: 0;
-            padding: 0;
-            font-family: sans-serif;
-        }
-
-        noscript {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-    </style>
 </head>
 
-<body class="loading">
-    <noscript>
-        <img width="192px" height="192px;" src="/assets/icons/192x192.png" alt="logo"/>
-        <h3>This application needs Javascript to run.</h3>
-    </noscript>
+<body>
     <hn-app></hn-app>
 </body>
 

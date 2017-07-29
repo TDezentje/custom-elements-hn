@@ -20,6 +20,7 @@ import { LinkElement } from 'app/router/link/link.element';
     css: require('./toolbar.scss')
 })
 export class ToolbarElement extends HTMLElement {
+
     constructor() {
         super();
     }

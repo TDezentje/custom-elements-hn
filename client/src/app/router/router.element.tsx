@@ -18,7 +18,7 @@ export interface IRoute {
     selector: 'hn-router',
     template: (el: RouterElement) => <template>
         <div class="view">
-            { el.currentRoute }
+            {el.currentRoute}
         </div>
     </template>
 })
@@ -28,6 +28,7 @@ export class RouterElement extends HTMLElement {
 
     public currentRoute;
 
+    private _routesAreMatched = false;
     public routes: IRoute[] = [
         {
             path: '/',
@@ -71,8 +72,28 @@ export class RouterElement extends HTMLElement {
         super();
     }
 
-    //need to return a promise to rerender
     async connectedCallback() {
+        this._matchRoutes();
+        this.currentRoute = await this._determineRoute();
+    }
+
+    async afterConnectedCallback() {
+        if (!this._routesAreMatched) {
+            this._matchRoutes();
+            
+        }
+
+        this._currentRouteId = this.makeid();
+        history.replaceState({ index: this._currentRouteId }, '', location.href);
+
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+
+        window.addEventListener('popstate', this._onPopState);
+    }
+
+    private _matchRoutes() {
         for (let route of this.routes) {
             let match;
             route.params = [];
@@ -96,18 +117,7 @@ export class RouterElement extends HTMLElement {
             route.regex = new RegExp(`^${route.path}$`);
         }
 
-        this._currentRouteId = this.makeid();
-        history.replaceState({ index: this._currentRouteId }, '', location.href);
-
-        this.currentRoute = await this._determineRoute();
-    }
-
-    afterConnectedCallback() {
-        if ('scrollRestoration' in history) {
-            history.scrollRestoration = 'manual';
-        }
-
-        window.addEventListener('popstate', this._onPopState);
+        this._routesAreMatched = true;
     }
 
     private async _determineRoute() {

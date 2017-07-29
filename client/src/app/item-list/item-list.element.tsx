@@ -26,7 +26,7 @@ import { HackerNewsService } from 'services/hacker-news.service';
                     {
                         element.page > 0 ? <LinkElement path={`/${element.type}/${element.page}`} class="navigation-button">&lt; previous</LinkElement> : ''
                     }
-                    <LinkElement path={`/${element.type}/${element.page + 2}`} class="navigation-button"  > next &gt;</LinkElement>
+                    <LinkElement path={`/${element.type}/${element.page + 2}`} class="navigation-button"> next &gt;</LinkElement>
                 </div>
             </template>;
         }
