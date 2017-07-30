@@ -44,9 +44,9 @@ module.exports = {
             name: "client",
             children: true,
         }),
-        // new webpack.optimize.UglifyJsPlugin({
-        //       exclude: [/client.4/i]
-        // }),
+        new webpack.optimize.UglifyJsPlugin({
+              exclude: [/client.4/i]
+        }),
         new SWPrecacheWebpackPlugin({
             cacheId: 'hacker-news',
             filename: 'sw.js',
@@ -82,8 +82,6 @@ module.exports = {
         watchOptions: {
             ignored: /node_modules/
         },
-        setup: function (app) {
-
-        }
+        setup: function (app) {}
     },
 };
