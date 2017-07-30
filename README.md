@@ -1,4 +1,4 @@
-#Custom Elements HN
+# Custom Elements HN
 
 An implementation of Hacker News build with Typescript on top of custom elements
 
