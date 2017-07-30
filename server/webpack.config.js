@@ -21,16 +21,6 @@ module.exports = {
         exprContextRegExp: /^\.\/.*$/,
         unknownContextRegExp: /^\.\/.*$/,
         rules: [{
-            test: /\.(html)$/,
-            use: [{
-                loader: 'html-loader',
-                options: {
-                    minimize: true,
-                    removeComments: true,
-                    collapseWhitespace: true
-                }
-            }]
-        }, {
             test: /\.scss$/,
             use: [{
                 loader: 'css-loader',

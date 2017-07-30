@@ -11,22 +11,23 @@
     <link rel="manifest" href="/assets/manifest.json">
     <link rel="icon" type="image/png" href="/assets/favicon.png">
 
+    <% for (file of htmlWebpackPlugin.files.js) { %>
+        <script type="text/javascript"><%= compilation.assets[file].source() %></script>
+    <% } %>
+
     <script>
-        var loadScript = function (src) {
+        var loadScript = function (src, cb) {
             var script = document.createElement('script');
             script.src = src;
-            script.async = false;
+            script.onload = cb;
             document.head.appendChild(script);
         }
 
         if (!('Promise' in window)) {
-            loadScript('/assets/promise.min.js');
+            loadScript('/assets/promise.min.js', window.bootstrapApplication);
+        } else {
+            window.bootstrapApplication();
         }
-
-        var loadScript = function (e) {
-            var s = document.createElement("script");
-            s.src = e, s.async = !1, document.head.appendChild(s)
-        };
 
         if('serviceWorker' in navigator) {
             navigator.serviceWorker.register("sw.js");

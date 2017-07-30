@@ -1,4 +1,4 @@
-async function bootstrap() {
+(<any>window).bootstrapApplication = async function () {
     const promises = [];
 
     if (!('fetch' in window)) {
@@ -15,5 +15,3 @@ async function bootstrap() {
 
     require('./app/app.element').App;
 }
-
-bootstrap();

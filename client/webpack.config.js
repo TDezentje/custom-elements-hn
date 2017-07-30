@@ -2,7 +2,6 @@ const webpack = require('webpack');
 const path = require('path');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
@@ -23,16 +22,6 @@ module.exports = {
     },
     module: {
         rules: [{
-            test: /\.(html)$/,
-            use: [{
-                loader: 'html-loader',
-                options: {
-                    minimize: true,
-                    removeComments: true,
-                    collapseWhitespace: true
-                }
-            }]
-        }, {
             test: /\.scss$/,
             use: [{
                 loader: 'css-loader',
@@ -55,9 +44,9 @@ module.exports = {
             name: "client",
             children: true,
         }),
-        new webpack.optimize.UglifyJsPlugin({
-              exclude: [/client.4/i]
-        }),
+        // new webpack.optimize.UglifyJsPlugin({
+        //       exclude: [/client.4/i]
+        // }),
         new SWPrecacheWebpackPlugin({
             cacheId: 'hacker-news',
             filename: 'sw.js',
@@ -78,12 +67,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/index.ejs'),
             chunksSortMode: 'dependency',
-            inject: 'body'
-        }),
-        new ScriptExtHtmlWebpackPlugin({
-            defaultAttribute: 'async',
-            prefetch: [/chunk/],
-            inline: [/main/]
+            inject: false
         }),
         new CopyWebpackPlugin([{
             from: path.resolve(__dirname, './src/assets'),

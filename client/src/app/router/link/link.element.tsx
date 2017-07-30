@@ -40,7 +40,7 @@ export class LinkElement extends HTMLElement {
     }
 
     connectedCallback() {
-        this.isExternal = this.path.startsWith('http') || this.path.startsWith('//');
+        this.isExternal = this.path.indexOf('http') === 0 || this.path.indexOf('//') === 0;
     }
 
     afterConnectedCallback() {

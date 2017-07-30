@@ -103,7 +103,7 @@ export function CustomElement(props: ICustomElementOptions) {
                     }
 
                     if (child.children) {
-                        replaceClassNames(Array.from(child.children));
+                        replaceClassNames((<any>child).children);
                     }
                 }
             }

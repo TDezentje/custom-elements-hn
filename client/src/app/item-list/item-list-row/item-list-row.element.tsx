@@ -47,7 +47,7 @@ export class ItemListRowElement extends HTMLElement {
     connectedCallback() {
         if (this.item.url) {
 
-            if (this.item.url.startsWith('item?id')) {
+            if (this.item.url.indexOf('item?id') === 0) {
                 this.item.url = `/${this.item.url.replace('?id=', '/')}`;
             }
         }

@@ -17,7 +17,7 @@ import { HackerNewsService } from 'services/hacker-news.service';
                         {
                             el.item.title ? <LinkElement class="title" path={el.item.url}>{el.item.title}</LinkElement> : null
                         }
-
+                        &nbsp;
                         {
                             el.item.domain ? <LinkElement class="domain" path={`//${el.item.domain}`}>({el.item.domain})</LinkElement> : null
                         }
