@@ -12,7 +12,7 @@ export class AppElement extends HTMLElement {
     public render() {
         const me = this;
         return [
-            <HeaderElement class="header" role="headers" />,
+            <HeaderElement class="header" />,
             <RouterElement id="content" class="content" role="main" />
         ]
     }
