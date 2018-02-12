@@ -13,7 +13,7 @@ interface Cache {
 }
 
 const cache: { [key: string]: Cache } = {};
-const pageSize = 20;
+const pageSize = 30;
 
 export class HackerNewsService extends BaseService implements HackerNewsContract {
     @HttpGet('/:type', {
