@@ -1,7 +1,5 @@
 import { Router } from 'express';
 import * as path from 'path';
-
-import * as crypto from 'crypto';
 import * as fs from 'fs';
 
 const dynamic = Router();
@@ -9,14 +7,15 @@ const dynamic = Router();
 import { dom } from 'dom';
 dom();
 
-import { App } from 'app/app.element';
+import { AppElement } from 'app/app.element';
 import { StyleRegistry } from 'decorators/custom-element.decorator';
+import { PermanentRedirectError } from 'errors/permanent-redirect.error';
 
-const indexHtml = path.resolve(path.join('dist', 'index.html'));
-const htmlFile = fs.readFileSync(path.resolve(path.join('dist', 'index.html')), 'utf8');
+const indexHtml = path.resolve('index.html');
+const htmlFile = fs.readFileSync(path.resolve('index.html'), 'utf8');
 const styleRegex = /<(hn-[^> ]+)/g;
 
-const swPath = path.resolve(path.join('dist', 'sw.js'));
+const swPath = path.resolve('sw.js');
 dynamic.get('/sw.js', (req, res) => {
     res.sendFile(swPath);
 });
@@ -30,20 +29,20 @@ dynamic.get('/favicon.ico', (req, res) => {
     res.sendFile(favicon);
 });
 
-dynamic.get('/*', async (req, res) => {
-    (<any>global).location.pathname = req.originalUrl;
-
+async function handleAll(req, res) {
     try {
-        let app = new App();
-        await app.connectedCallback();
+        let app = new AppElement();
+        app.requestContext = req;
+        app.responseContext = res;
+        await (app as any).connectedCallback();
         const rendered = '<hn-app ssr>' + app.innerHTML + '</hn-app>';
 
         const selectors = [];
-        
+
         let match;
         while ((match = styleRegex.exec(rendered)) !== null) {
             const selector = match[1];
-            if(selectors.indexOf(selector) === -1) {
+            if (selectors.indexOf(selector) === -1) {
                 selectors.push(selector);
             }
         }
@@ -52,10 +51,17 @@ dynamic.get('/*', async (req, res) => {
             .replace('</head>', `${selectors.map(selector => StyleRegistry.get(selector)).join('')}</head>`)
         );
     } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
+        if (error instanceof PermanentRedirectError) {
+            res.redirect(301, error.path);
+        } else {
+            console.log(error);
+            res.sendStatus(500);
+        }
     }
-});
+}
+
+dynamic.get('/*', handleAll);
+dynamic.post('/*', handleAll);
 
 console.log('[App: Dynamic] initialized.');
 export default dynamic;

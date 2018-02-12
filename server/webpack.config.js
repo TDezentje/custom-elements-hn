@@ -6,12 +6,12 @@ module.exports = {
     entry: path.resolve(__dirname, './src/app.ts'),
     resolve: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        modules: ['node_modules', path.resolve(__dirname, './src'), path.resolve(__dirname, '../client/src')]
+        modules: ['node_modules', path.resolve(__dirname, './src'), path.resolve(__dirname, '../shared/src')]
     },
     node: {
         Buffer: false,
         __filename: true,
-        __dirname: true
+        __dirname: false
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
@@ -35,12 +35,27 @@ module.exports = {
             }]
         }, {
             test: /\.(ts|tsx)?$/,
-            use: 'ts-loader'
+            use: [{
+                loader: 'ts-loader',
+                options: {
+                    getCustomTransformers: () => ({
+                        before: [
+                            require(path.resolve(__dirname, '../typescript-transformers/dist/css-require.transform')).transformer
+                        ]
+                    })
+                }
+            }]
+        }, {
+            //for external minimized modules only
+            test: /\.css$/,
+            use: [{
+                loader: 'css-loader'
+            }]
         }]
     },
     plugins: [
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': '"production"'
+            'process.env.NODE_ENV': "'production'"
         }),
         new webpack.optimize.ModuleConcatenationPlugin(),
         new webpack.optimize.LimitChunkCountPlugin({

@@ -1,0 +1,23 @@
+hn-user {
+    width: 100%;
+    max-width: 1200px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.about-header {
+    font-weight: bold;
+}

@@ -1,0 +1,31 @@
+@import "~styles/color";
+.button {
+	font-family: sans-serif;
+	height: 35px;
+	font-size: 15px;
+	border: 1px solid $color-400;
+	border-radius: 3px;
+	padding: 5px 10px;
+	transition: background-color 0.2s ease-out, border-color 0.2s ease-out, color 0.2s ease-out, box-shadow 0.2s ease-in-out;
+	white-space: nowrap;
+	word-wrap: normal;
+	outline: none;
+	cursor: pointer;
+	letter-spacing: normal;
+	text-transform: none;
+	font-weight: 600;
+	color: $color-400;
+	background-color: transparent;
+	&:active,
+	&:hover {
+		color: white;
+	}
+	&:hover {
+		background-color: $color-300;
+		border-color: $color-300;
+	}
+	&:active {
+		background-color: $color-500;
+		border-color: $color-500;
+	}
+}

@@ -1,16 +1,18 @@
-export class HackerNewsService {
-    static async getStories(type: string, page: number): Promise<any> {
-        const response = await fetch(`https://node-hnapi.herokuapp.com/${type}?page=${page}`);
-        return await response.json();
+import { BaseService } from 'services/base.service';
+import { HackerNewsContract } from 'contracts/hacker-news.contract';
+import { Item } from 'models/item.model';
+import { User } from 'models/user.model';
+
+export class HackerNewsService extends BaseService implements HackerNewsContract {
+    public getItems(type: string, page: number): Promise<Item[]> {
+        return this.getArray<Item>(Item, `/${type}?page=${page}`);
     }
 
-    static async getItem(itemId: number): Promise<any> {
-        const response = await fetch(`https://node-hnapi.herokuapp.com/item/${itemId}`);
-        return await response.json();
+    public getItem(id: number): Promise<Item> {
+        return this.getObject<Item>(Item, `/item/${id}`);
     }
 
-    static async getUser(userId: string) {
-        const response = await fetch(`https://node-hnapi.herokuapp.com/user/${userId}`);
-        return await response.json();
+    public getUser(id: string): Promise<User> {
+        return this.getObject<User>(User, `/user/${id}`);
     }
 }

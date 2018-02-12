@@ -1,9 +1,9 @@
 export interface ICustomElementOptions {
-    template?: (element: any) => Element[],
     selector: string,
     css?: any,
     requires?: any[],
-    options?: ElementDefinitionOptions
+    options?: ElementDefinitionOptions,
+    args?: string[]
 }
 
 function convertToHTML(string) {
@@ -19,11 +19,13 @@ export function raw(content: string) {
     };
 }
 
-export function render(element: any, attributes: any, ...children: any[]) {
-    if (element === 'template') {
-        return children;
-    }
+let _elId = 1;
 
+export function createElement(element: any, attributes: any, ...children: any[]) {
+    if(element === 'slot') {
+        return this._contentSlot;
+    }
+    
     const childElements = [];
 
     const addChildrenToChildElements = (children) => {
@@ -32,7 +34,7 @@ export function render(element: any, attributes: any, ...children: any[]) {
                 childElements.push(document.createTextNode(<string>child));
             } else if (Array.isArray(child)) {
                 addChildrenToChildElements(child);
-            } else if(child && child.isRaw) {
+            } else if (child && child.isRaw) {
                 addChildrenToChildElements(convertToHTML(child.content));
             } else if (child) {
                 childElements.push(child);
@@ -41,16 +43,35 @@ export function render(element: any, attributes: any, ...children: any[]) {
     };
     addChildrenToChildElements(children);
 
+    if (attributes && attributes.class && this._css) {
+        const classes = attributes.class.split(' ');
+        let newClasses = '';
+
+        for (const c of classes) {
+            newClasses += (this._css[c] || c) + ' ';
+        }
+
+        attributes.class = newClasses;
+    }
+
     let el;
     if (typeof (element) === 'string') {
         el = document.createElement(element);
         for (let child of childElements) {
             el.appendChild(child);
         }
-
     } else {
-        el = document.createElement(element.selector);
-        el.contentSlot = childElements;
+        const args = [];
+
+        if (element.args) {
+            for (const arg of element.args) {
+                args.push(attributes[arg]);
+                delete attributes[arg];
+            }
+        }
+
+        el = new element(...args);
+        el._contentSlot = childElements;
 
         if (el.inputProperties) {
             for (let input of el.inputProperties) {
@@ -61,59 +82,61 @@ export function render(element: any, attributes: any, ...children: any[]) {
     }
 
     for (let attr in attributes) {
-        el.setAttribute(attr, attributes[attr]);
+        if(attributes[attr] !== undefined) {
+            if(attr === 'ref') {
+                attributes[attr] = `${this._elId}.${attributes[attr]}`;
+            }
+
+            el.setAttribute(attr, attributes[attr]);
+        }
     }
 
     return el;
-}
+};
 
 export function CustomElement(props: ICustomElementOptions) {
     return function (target) {
         target.whenDefined = window.customElements.whenDefined(props.selector);
         target.selector = props.selector;
-        let func = target.prototype.connectedCallback;
 
         if (props.css && !document.querySelector(`style#${props.selector}`)) {
             document.head.innerHTML += `<style id="${props.selector}">${props.css.toString()}</style>`;
         }
 
+        if (props.args) {
+            target.args = props.args;
+        }
+
         target.prototype.connectedCallback = function () {
+            this.createElement = createElement.bind(this);
+
+            if (props.css) {
+                this._css = props.css.locals;
+            }
+
             if (this._propertiesToBind) {
                 for (let property of this._propertiesToBind) {
                     this[property] = this[property].bind(this);
                 }
             }
 
-            const replaceClassNames = (children: Element[]) => {
+            const appendChildren = (children) => {
                 for (let child of children) {
-                    if (!child) {
-                        continue;
-                    }
-
-                    const classAttribute = child.getAttribute('class');
-                    if (classAttribute) {
-                        const classes = classAttribute.split(' ');
-
-                        for (let className of classes) {
-                            if (props.css.locals[className]) {
-                                child.classList.remove(className);
-                                child.classList.add(props.css.locals[className]);
-                            }
-                        }
-                    }
-
-                    if (child.children) {
-                        replaceClassNames((<any>child).children);
+                    if (typeof (child) === 'string') {
+                        this.appendChild(document.createTextNode(child));
+                    } else if (Array.isArray(child)) {
+                        appendChildren(child);
+                    } else if (child) {
+                        this.appendChild(child);
                     }
                 }
             }
 
-            const processChildren = () => {
-                const children = props.template(this);
-
-                if (props.css) {
-                    //loop children to replace classes
-                    replaceClassNames(children);
+            const processChildren = (children) => {
+                if (!children) {
+                    return;
+                } else if (!Array.isArray(children)) {
+                    children = [children];
                 }
 
                 let child;
@@ -121,54 +144,52 @@ export function CustomElement(props: ICustomElementOptions) {
                     this.removeChild(this.firstChild);
                 }
 
-                for (child of children) {
-                    if (typeof (child) === 'string') {
-                        this.appendChild(document.createTextNode(child));
-                    } else if (child) {
-                        this.appendChild(child);
-                    }
-                }
+                appendChildren(children);
             }
 
             let connectedCallbackPromise = Promise.resolve();
 
-            if(!this.hasAttribute('ssr')) {
-                if (props.template) {
-                    processChildren();
-                }
-
-                let shouldRefresh = false;
-
-                if (func) {
-                    shouldRefresh = true;
-
-                    let result = func.call(this, arguments);
+            if (!this.hasAttribute('ssr')) {
+                this._elId = _elId;
+                this.setAttribute('_el-id', _elId);
+                _elId++;
+                
+                if (this.init) {
+                    let result = this.init();
                     if (result && result.then) {
-                        connectedCallbackPromise = result;
-                    }
-                }
-
-                if (props.template && shouldRefresh) {
-                    connectedCallbackPromise = connectedCallbackPromise.then(() => {
-                        processChildren();
-                    });
-                }
-            }
-            
-            connectedCallbackPromise.then(() => {
-                if (this.childSelectors) {
-                    for (let selector of this.childSelectors) {
-                        let element = this.querySelector(`[ref="${selector}"]`);
-
-                        if (!element) {
-                            throw `Could not find element for property ${target.selector}.${selector}`;
+                        if(this.renderLoader) {
+                            processChildren(this.renderLoader());
                         }
-                        this[selector] = element;
+
+                        connectedCallbackPromise = result.then(() => {
+                            if(this.clearLoader) {
+                                this.clearLoader();
+                            }
+                        });
                     }
                 }
 
-                if (this.afterConnectedCallback) {
-                    this.afterConnectedCallback();
+                connectedCallbackPromise = connectedCallbackPromise.then(() => {
+                    if(this.render) {
+                        processChildren(this.render());
+                    }
+                });
+            }
+
+            connectedCallbackPromise.then(() => {
+                const references = this.querySelectorAll('[ref]');
+                const elId = this.getAttribute('_el-id');
+
+                for(let i = 0; i < references.length; i++) {
+                    const reference = references.item(i);
+                    const value = reference.getAttribute('ref').split('.');
+                    if(elId === value[0]) {
+                        this[value[1]] = reference;
+                    }
+                }
+
+                if (this.afterRender) {
+                    this.afterRender();
                 }
             });
         }

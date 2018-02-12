@@ -1,0 +1,28 @@
+hn-comment {
+    border-top: 1px solid #e1e1e1;
+    padding: 16px 0 8px 0;   
+}
+
+.user {
+    text-decoration: underline;
+}
+
+.text {
+    margin-top: 8px;
+}
+
+.comments {
+    display: flex;
+    flex-direction: column;
+    padding-left: 25px;
+    margin-top: 8px;
+}
+
+.toggle {
+    cursor: pointer;
+    display: none;
+    margin-right: 4px;
+}
+.time {
+    color: rgba(0, 0, 0, 0.6);
+}

@@ -1,0 +1,66 @@
+hn-list {
+    width: 100%;
+    max-width: 1200px;
+}
+
+.item-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.actions {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: 16px;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.item {
+    display: flex;
+    flex-direction: row;
+    margin-top: 8px;
+    padding: 0 16px 0 0;
+}
+
+.index {
+    font-size: 20px;
+    font-weight: 500;
+    width: 72px;
+    padding: 16px;
+    box-sizing: border-box;
+    text-align: end;
+    padding: 16px 16px 0 0;
+}
+
+.content {
+    width: 0px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+}
+
+.details {
+    display: flex;
+    flex-direction: row;
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.75);
+}
+
+.title {
+    margin-bottom: 4px;
+    line-height: 18px;
+    font-size: 16px;
+}
+
+.domain {
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.comments,
+.user {
+    text-decoration: underline;
+}

@@ -1,2 +1,5 @@
-dist/
+.git/
+.vscode/
 node_modules/
+dist/
+typescript-transformers/dist

@@ -10,7 +10,7 @@
         "experimentalDecorators": true,
         "target": "ES5",
         "jsx": "react",
-        "jsxFactory": "render",
+        "jsxFactory": "me.createElement",
         "noImplicitAny": false,
         "types": [
             "node"
@@ -22,6 +22,12 @@
             "es2015",
             "es2016",
             "dom"
-        ]
+        ],
+        "paths": {
+            "*": [
+                "*",
+                "../../shared/src/*"
+            ]
+        }
     }
 }

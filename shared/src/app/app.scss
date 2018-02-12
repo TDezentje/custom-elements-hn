@@ -1,0 +1,36 @@
+@import "~styles/color";
+
+html {
+    touch-action: manipulation;
+    overflow-x: hidden;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    background-color: white;
+    overflow-x: hidden;
+}
+
+body,
+input {
+    font-family: sans-serif;
+    font-weight: 400;
+    color: #323232;
+}
+
+p {
+    text-align: justify;
+    line-height: 21px;
+}
+
+hn-app {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.content {
+    width: 100%;
+    box-sizing: border-box;
+}

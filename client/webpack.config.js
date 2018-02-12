@@ -10,16 +10,17 @@ module.exports = {
     },
     resolve: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        modules: ['node_modules', path.resolve(__dirname, './src')]
+        modules: ['node_modules', path.resolve(__dirname, './src'), path.resolve(__dirname, '../shared/src')]
     },
     node: {
         Buffer: false
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
-        filename: 'assets/main.client.[id].[chunkhash].js',
-        chunkFilename: 'assets/chunk.client.[id].[chunkhash].js',
+        filename: 'assets/client.[chunkhash].js',
+        chunkFilename: 'assets/client.[name].[chunkhash].js',
     },
+    devtool: 'inline-source-map',
     module: {
         rules: [{
             test: /\.scss$/,
@@ -36,25 +37,44 @@ module.exports = {
             }]
         }, {
             test: /\.(ts|tsx)?$/,
-            use: 'ts-loader'
+            use: [{
+                loader: 'ts-loader',
+                options: {
+                    getCustomTransformers: () => ({
+                        before: [
+                            require(path.resolve(__dirname, '../typescript-transformers/dist/css-require.transform')).transformer
+                        ]
+                    })
+                }
+            }]
+        }, {
+            //for external minimized modules only
+            test: /\.css$/,
+            use: [{
+                loader: 'css-loader'
+            }]
         }]
     },
     plugins: [
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': "'production'"
+        }),
         new webpack.optimize.CommonsChunkPlugin({
             name: "client",
             children: true,
         }),
         new webpack.optimize.UglifyJsPlugin({
-              exclude: [/client.4/i]
+            exclude: [/client.custom-elements-adapter/i]
         }),
         new SWPrecacheWebpackPlugin({
-            cacheId: 'hacker-news',
+            cacheId: 'custom-elements-hn',
             filename: 'sw.js',
             maximumFileSizeToCacheInBytes: 4194304,
             minify: true,
             navigateFallback: '/index.html',
+            navigateFallbackWhitelist: [/^\/(?!api|auth|files)/],
             runtimeCaching: [{
-                urlPattern: /^https:\/\/node-hnapi.herokuapp.com/,
+                urlPattern: "/api/*",
                 handler: 'networkFirst'
             }, {
                 urlPattern: /^https:\/\/fonts.googleapis.com/,
@@ -67,21 +87,13 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/index.ejs'),
             chunksSortMode: 'dependency',
-            inject: false
+            inject: false,
+            sw: true
         }),
         new CopyWebpackPlugin([{
             from: path.resolve(__dirname, './src/assets'),
             to: 'assets'
         }, ]),
         new webpack.optimize.ModuleConcatenationPlugin()
-    ],
-    devServer: {
-        port: 8080,
-        host: 'localhost',
-        historyApiFallback: true,
-        watchOptions: {
-            ignored: /node_modules/
-        },
-        setup: function (app) {}
-    },
+    ]
 };

@@ -1,0 +1,29 @@
+hn-item {
+    width: 100%;
+    max-width: 1200px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.domain {
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.user {
+    text-decoration: underline;
+}
+
+.details {
+    margin-bottom: 16px;
+}
+
+.comments-counter {
+    margin-top: 24px;
+}
