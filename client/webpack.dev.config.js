@@ -67,8 +67,10 @@ module.exports = {
             'process.env.NODE_ENV': "'development'"
         }),
         new webpack.optimize.CommonsChunkPlugin({
-            name: "client",
-            children: true,
+            name: 'client',
+            minChunks: 2,
+            deepChildren: true,
+            chunks: ['list', 'item', 'user']
         }),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/index.ejs'),

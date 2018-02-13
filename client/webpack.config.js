@@ -60,8 +60,10 @@ module.exports = {
             'process.env.NODE_ENV': "'production'"
         }),
         new webpack.optimize.CommonsChunkPlugin({
-            name: "client",
-            children: true,
+            name: 'client',
+            minChunks: 2,
+            deepChildren: true,
+            chunks: ['list', 'item', 'user'],
         }),
         new webpack.optimize.UglifyJsPlugin({
             exclude: [/client.custom-elements-adapter/i]
